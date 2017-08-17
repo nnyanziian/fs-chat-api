@@ -89,8 +89,44 @@ app.get("/api/user/:id", function (req, res) {
         }
     });
 });
-app.delete("/api/contacts/:id", function (req, res) {
 
+app.put("/api/user/:id", function (req, res) {
+    validateInput(req.body.username, "Username");
+    //validateInput(req.body.userPassword, "Password");
+
+    var User = mongoose.model('users', userSchema);
+
+    var userUpdate = {
+        "username": req.body.username
+        //  "userPassword": req.body.userPassword,
+        // "userStatus": req.body.userStatus,
+    };
+    var user_id = req.params.id;
+    //Model.find(query, fields, options, callback)
+    User.findByIdAndUpdate(user_id, userUpdate, function (err, data) {
+        if (err) {
+            handlerError(res, err.message, "User not Found");
+        } else {
+            res.status(200).json({
+                "msg": "User Updated"
+            });
+        }
+    });
+});
+
+app.delete("/api/user/:id", function (req, res) {
+    var User = mongoose.model('users', userSchema);
+    var user_id = req.params.id;
+    //Model.find(query, fields, options, callback)
+    User.findByIdAndRemove(user_id, function (err, data) {
+        if (err) {
+            handlerError(res, err.message, "User not Found");
+        } else {
+            res.status(200).json({
+                "msg": "User Deleted"
+            });
+        }
+    });
 });
 const server = app.listen(process.env.PORT || 8080, function () {
 
