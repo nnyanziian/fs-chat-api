@@ -143,3 +143,27 @@ exports.setProfile = function (req, res) {
     });
     
 }
+
+exports.setStatus = function (req, res) {
+    func.validateInput(req.body.userStatus, "User Status");
+    //validateInput(req.body.userPassword, "Password");
+
+    var User = mongoose.model('users', userSchema);
+
+    var userUpdate = {
+        "userStatus": req.body.username
+        //  "userPassword": req.body.userPassword,
+        // "userStatus": req.body.userStatus,
+    };
+    var user_id = req.params.id;
+    //Model.find(query, fields, options, callback)
+    User.findByIdAndUpdate(user_id, userUpdate, function (err, data) {
+        if (err) {
+            func.handlerError(res, err.message, "User not Found");
+        } else {
+            res.status(200).json({
+                "msg": "User status Updated"
+            });
+        }
+    });
+}
